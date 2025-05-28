@@ -89,7 +89,7 @@ function verifica(obj) {
       btnReiniciar.className = 'visivel';
     }
 
-    let sorteado = Math.floor(Math.random() * 3);
+    let sorteado = Math.floor(Math.random() * 6);
 
     if (obj.id == sorteado) {
       acertou(obj);
