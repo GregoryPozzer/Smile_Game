@@ -5,6 +5,8 @@ let jogar = true;
 
 const btnReiniciar = document.getElementById('reiniciar');
 const btnJogarNovamente = document.getElementById('joganovamente');
+const mensagemErro = document.getElementById('mensagemErro');
+const resposta = document.getElementById('resposta');
 
 // Reinicia tudo
 function reiniciar() {
@@ -14,30 +16,24 @@ function reiniciar() {
   jogar = true;
   jogarNovamente();
   atualizaPlacar(0, 0);
-  btnJogarNovamente.className = 'visivel';
-  btnReiniciar.className = 'invisivel';
+  btnJogarNovamente.classList.replace('invisivel', 'visivel');
+  btnReiniciar.classList.replace('visivel', 'invisivel');
 }
 
-// Função que reseta o estado das cartas
+// Reseta o estado das cartas
 function jogarNovamente() {
   jogar = true;
 
-  // Limpa as divs com id de 0 a 5
   for (let i = 0; i <= 5; i++) {
     const div = document.getElementById(i.toString());
     if (div) {
       div.className = 'inicial';
 
-      // Remove qualquer imagem dentro da carta
-      const imagens = div.getElementsByTagName('img');
-      while (imagens.length > 0) {
-        imagens[0].remove();
-      }
+      // Limpa o conteúdo da div e restaura o número
+      div.innerHTML = i.toString();
     }
   }
 
-  // Limpa mensagem de erro se existir
-  const mensagemErro = document.getElementById('mensagemErro');
   if (mensagemErro) {
     mensagemErro.innerHTML = '';
   }
@@ -45,9 +41,8 @@ function jogarNovamente() {
 
 // Atualiza o placar
 function atualizaPlacar(acertos, tentativas) {
-  desempenho = (acertos / tentativas) * 100;
-  document.getElementById("resposta").innerHTML =
-    `Placar - Acertos: ${acertos} Tentativas: ${tentativas} Desempenho: ${Math.round(desempenho)}%`;
+  desempenho = tentativas > 0 ? (acertos / tentativas) * 100 : 0;
+  resposta.innerHTML = `Placar - Acertos: ${acertos} Tentativas: ${tentativas} Desempenho: ${Math.round(desempenho)}%`;
 }
 
 // Quando acerta
@@ -58,6 +53,9 @@ function acertou(obj) {
   const img = new Image(100);
   img.src = "https://ichef.bbci.co.uk/ace/ws/800/cpsprodpb/163A6/production/_104764019_gettyimages-873395522.jpg.webp";
   img.id = "imagem";
+
+  // Limpa o conteúdo e coloca só a imagem
+  obj.innerHTML = '';
   obj.appendChild(img);
 
   setTimeout(() => {
@@ -73,21 +71,20 @@ function errou(obj, sorteado) {
   const imgErro = new Image(50);
   imgErro.src = "https://images.icon-icons.com/3413/PNG/512/sad_emoji_icon_217677.png";
   imgErro.alt = "Erro!";
+
+  // Limpa o conteúdo e coloca só o emoji de erro
+  obj.innerHTML = '';
   obj.appendChild(imgErro);
 
   setTimeout(() => {
     obj.classList.remove('erroAnimado');
     imgErro.remove();
+    obj.innerHTML = obj.id; // Restaura o número da carta
   }, 1000);
 
-  // Mostra onde estava o Slime
   const objSorteado = document.getElementById(sorteado);
-  if (objSorteado) {
-    acertou(objSorteado);
-  }
+  if (objSorteado) acertou(objSorteado);
 
-  // Mensagem de erro
-  const mensagemErro = document.getElementById('mensagemErro');
   if (mensagemErro) {
     mensagemErro.innerHTML = "Você errou! Tente novamente!";
     mensagemErro.style.color = 'red';
@@ -108,9 +105,9 @@ function verifica(obj) {
   jogar = false;
   tentativas++;
 
-  const sorteado = Math.floor(Math.random() * 6); // de 0 a 5
+  const sorteado = Math.floor(Math.random() * 6);
 
-  if (obj.id == sorteado.toString()) {
+  if (obj.id === sorteado.toString()) {
     acertos++;
     acertou(obj);
   } else {
@@ -120,11 +117,13 @@ function verifica(obj) {
   atualizaPlacar(acertos, tentativas);
 
   if (tentativas === 10) {
-    btnJogarNovamente.className = 'invisivel';
-    btnReiniciar.className = 'visivel';
+    btnJogarNovamente.classList.replace('visivel', 'invisivel');
+    btnReiniciar.classList.replace('invisivel', 'visivel');
   }
 }
 
 // Eventos dos botões
 btnJogarNovamente.addEventListener('click', jogarNovamente);
 btnReiniciar.addEventListener('click', reiniciar);
+
+
