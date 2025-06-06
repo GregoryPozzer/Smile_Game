@@ -8,6 +8,12 @@ const btnJogarNovamente = document.getElementById('joganovamente');
 const mensagemErro = document.getElementById('mensagemErro');
 const resposta = document.getElementById('resposta');
 
+// Atualiza visibilidade dos botões
+function alternarBotoes(jogarVisivel) {
+  btnJogarNovamente.classList.replace(jogarVisivel ? 'invisivel' : 'visivel', jogarVisivel ? 'visivel' : 'invisivel');
+  btnReiniciar.classList.replace(jogarVisivel ? 'visivel' : 'invisivel', jogarVisivel ? 'invisivel' : 'visivel');
+}
+
 // Reinicia tudo
 function reiniciar() {
   desempenho = 0;
@@ -16,8 +22,7 @@ function reiniciar() {
   jogar = true;
   jogarNovamente();
   atualizaPlacar(0, 0);
-  btnJogarNovamente.classList.replace('invisivel', 'visivel');
-  btnReiniciar.classList.replace('visivel', 'invisivel');
+  alternarBotoes(true);
 }
 
 // Reseta o estado das cartas
@@ -28,8 +33,6 @@ function jogarNovamente() {
     const div = document.getElementById(i.toString());
     if (div) {
       div.className = 'inicial';
-
-      // Limpa o conteúdo da div e restaura o número
       div.innerHTML = i.toString();
     }
   }
@@ -54,7 +57,6 @@ function acertou(obj) {
   img.src = "https://ichef.bbci.co.uk/ace/ws/800/cpsprodpb/163A6/production/_104764019_gettyimages-873395522.jpg.webp";
   img.id = "imagem";
 
-  // Limpa o conteúdo e coloca só a imagem
   obj.innerHTML = '';
   obj.appendChild(img);
 
@@ -72,14 +74,12 @@ function errou(obj, sorteado) {
   imgErro.src = "https://images.icon-icons.com/3413/PNG/512/sad_emoji_icon_217677.png";
   imgErro.alt = "Erro!";
 
-  // Limpa o conteúdo e coloca só o emoji de erro
   obj.innerHTML = '';
   obj.appendChild(imgErro);
 
   setTimeout(() => {
     obj.classList.remove('erroAnimado');
-    imgErro.remove();
-    obj.innerHTML = obj.id; // Restaura o número da carta
+    obj.innerHTML = obj.id;
   }, 1000);
 
   const objSorteado = document.getElementById(sorteado);
@@ -117,8 +117,7 @@ function verifica(obj) {
   atualizaPlacar(acertos, tentativas);
 
   if (tentativas === 10) {
-    btnJogarNovamente.classList.replace('visivel', 'invisivel');
-    btnReiniciar.classList.replace('invisivel', 'visivel');
+    alternarBotoes(false);
   }
 }
 
