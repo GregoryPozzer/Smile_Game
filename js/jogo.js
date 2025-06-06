@@ -10,8 +10,11 @@ const resposta = document.getElementById('resposta');
 
 // Atualiza visibilidade dos botões
 function alternarBotoes(jogarVisivel) {
-  btnJogarNovamente.classList.replace(jogarVisivel ? 'invisivel' : 'visivel', jogarVisivel ? 'visivel' : 'invisivel');
-  btnReiniciar.classList.replace(jogarVisivel ? 'visivel' : 'invisivel', jogarVisivel ? 'invisivel' : 'visivel');
+  const mostrar = (btn, visivel) =>
+    btn.classList.replace(visivel ? 'invisivel' : 'visivel', visivel ? 'visivel' : 'invisivel');
+
+  mostrar(btnJogarNovamente, jogarVisivel);
+  mostrar(btnReiniciar, !jogarVisivel);
 }
 
 // Reinicia tudo
@@ -30,22 +33,20 @@ function jogarNovamente() {
   jogar = true;
 
   for (let i = 0; i <= 5; i++) {
-    const div = document.getElementById(i.toString());
+    const div = document.getElementById(i);
     if (div) {
       div.className = 'inicial';
-      div.innerHTML = i.toString();
+      div.textContent = i;
     }
   }
 
-  if (mensagemErro) {
-    mensagemErro.innerHTML = '';
-  }
+  if (mensagemErro) mensagemErro.textContent = '';
 }
 
 // Atualiza o placar
 function atualizaPlacar(acertos, tentativas) {
-  desempenho = tentativas > 0 ? (acertos / tentativas) * 100 : 0;
-  resposta.innerHTML = `Placar - Acertos: ${acertos} Tentativas: ${tentativas} Desempenho: ${Math.round(desempenho)}%`;
+  desempenho = tentativas ? (acertos / tentativas) * 100 : 0;
+  resposta.textContent = `Placar - Acertos: ${acertos} Tentativas: ${tentativas} Desempenho: ${Math.round(desempenho)}%`;
 }
 
 // Quando acerta
@@ -60,9 +61,7 @@ function acertou(obj) {
   obj.innerHTML = '';
   obj.appendChild(img);
 
-  setTimeout(() => {
-    obj.classList.remove('acertouAnimacao');
-  }, 500);
+  setTimeout(() => obj.classList.remove('acertouAnimacao'), 500);
 }
 
 // Quando erra
@@ -79,19 +78,17 @@ function errou(obj, sorteado) {
 
   setTimeout(() => {
     obj.classList.remove('erroAnimado');
-    obj.innerHTML = obj.id;
+    obj.textContent = obj.id;
   }, 1000);
 
   const objSorteado = document.getElementById(sorteado);
   if (objSorteado) acertou(objSorteado);
 
   if (mensagemErro) {
-    mensagemErro.innerHTML = "Você errou! Tente novamente!";
+    mensagemErro.textContent = "Você errou! Tente novamente!";
     mensagemErro.style.color = 'red';
     mensagemErro.classList.add('mensagemErroAnimada');
-    setTimeout(() => {
-      mensagemErro.classList.remove('mensagemErroAnimada');
-    }, 500);
+    setTimeout(() => mensagemErro.classList.remove('mensagemErroAnimada'), 500);
   }
 }
 
@@ -124,5 +121,6 @@ function verifica(obj) {
 // Eventos dos botões
 btnJogarNovamente.addEventListener('click', jogarNovamente);
 btnReiniciar.addEventListener('click', reiniciar);
+
 
 
